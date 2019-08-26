@@ -138,74 +138,19 @@ struct ao_functions {
 
 void ao_read_config_files (ao_config *config);
 
-#define adebug(format, args...) {\
-    if(!device || device->verbose==2){                                  \
-      if(strcmp(format,"\n")){                                          \
-        if(device && device->funcs->driver_info()->short_name){         \
-          fprintf(stderr,"ao_%s debug: " format,device->funcs->driver_info()->short_name,## args); \
-        }else{                                                          \
-          fprintf(stderr,"debug: " format,## args);                     \
-        }                                                               \
-      }else{                                                            \
-        fprintf(stderr,"\n");                                           \
-      }                                                                 \
-    }                                                                   \
-  }
+extern void logD(const char* fmt, ...);
+#define adebug(...) logD(__VA_ARGS__)
 
-#define averbose(format, args...) {\
-    if(!device || device->verbose>0){                                   \
-      if(strcmp(format,"\n")){                                          \
-        if(device && device->funcs->driver_info()->short_name){         \
-          fprintf(stderr,"ao_%s info: " format,device->funcs->driver_info()->short_name,## args); \
-        }else{                                                          \
-          fprintf(stderr,"info: " format,## args);                      \
-        }                                                               \
-      }else{                                                            \
-        fprintf(stderr,"\n");                                           \
-      }                                                                 \
-    }                                                                   \
-  }
+extern void logV(const char* fmt, ...);
+#define averbose(...) logV(__VA_ARGS__)
 
-#define ainfo(format, args...) {\
-    if(!device || device->verbose>=0){                                  \
-      if(strcmp(format,"\n")){                                          \
-        if(device && device->funcs->driver_info()->short_name){         \
-          fprintf(stderr,"ao_%s info: " format,device->funcs->driver_info()->short_name,## args); \
-        }else{                                                          \
-          fprintf(stderr,"info: " format,## args);                      \
-        }                                                               \
-      }else{                                                            \
-        fprintf(stderr,"\n");                                           \
-      }                                                                 \
-    }                                                                   \
-  }
+extern void logI(const char* fmt, ...);
+#define ainfo(...) logI(__VA_ARGS__)
 
-#define awarn(format, args...) {\
-    if(!device || device->verbose>=0){                                  \
-      if(strcmp(format,"\n")){                                          \
-        if(device && device->funcs->driver_info()->short_name){         \
-          fprintf(stderr,"ao_%s WARNING: " format,device->funcs->driver_info()->short_name,## args); \
-        }else{                                                          \
-          fprintf(stderr,"WARNING: " format,## args);                   \
-        }                                                               \
-      }else{                                                            \
-        fprintf(stderr,"\n");                                           \
-      }                                                                 \
-    }                                                                   \
-  }
+extern void logW(const char* fmt, ...);
+#define awarn(...) logW(__VA_ARGS__)
 
-#define aerror(format, args...) {                                       \
-    if(!device || device->verbose>=0){                                  \
-      if(strcmp(format,"\n")){                                          \
-        if(device && device->funcs->driver_info()->short_name){         \
-          fprintf(stderr,"ao_%s ERROR: " format,device->funcs->driver_info()->short_name,## args); \
-        }else{                                                          \
-          fprintf(stderr,"ERROR: " format,## args);                     \
-        }                                                               \
-      }else{                                                            \
-        fprintf(stderr,"\n");                                           \
-      }                                                                 \
-    }                                                                   \
-  }
+extern void logE(const char* fmt, ...);
+#define aerror(...) logE(__VA_ARGS__)
 
 #endif /* __AO_PRIVATE_H__ */

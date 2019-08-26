@@ -28,11 +28,14 @@
  ********************************************************************/
 
 //#define PREPARE_EACH
+#ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE
+#endif /*_CRT_SECURE_NO_DEPRECATE*/
 
 #include <windows.h>
 #include <mmreg.h>
 #include <mmsystem.h>
+#include <ks.h>
 #include <ksmedia.h>
 
 #include <stdlib.h>
@@ -255,9 +258,9 @@ static int _ao_close_device(ao_device *device)
 
   mmres = waveOutClose(internal->hwo);
   if(mmres == MMSYSERR_NOERROR) {
-    adebug("waveOutClose(%d)\n => %s\n", internal->id, mmerror(mmres));
+    adebug("waveOutClose(%d) => %s\n", internal->id, mmerror(mmres));
   }else{
-    aerror("waveOutClose(%d)\n => %s\n", internal->id, mmerror(mmres));
+    aerror("waveOutClose(%d) => %s\n", internal->id, mmerror(mmres));
   }
   res = (mmres == MMSYSERR_NOERROR);
 
@@ -592,7 +595,7 @@ int ao_wmm_play(ao_device *device,
     }
   }
 
-  adebug("ao_wmm_play => %d rem => [%s]\n",num_bytes,ret?"success":"error");
+  //adebug("ao_wmm_play => %d rem => [%s]\n",num_bytes,ret?"success":"error");
   return ret;
 
 }

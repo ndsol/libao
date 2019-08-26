@@ -48,8 +48,8 @@ static int dlclose(void *handle) { return 0; }
 #include <sys/stat.h>
 #ifndef _MSC_VER
 # include <unistd.h>
+# include <dirent.h>
 #endif
-#include <dirent.h>
 
 #include "ao/ao.h"
 #include "ao_private.h"
@@ -154,7 +154,7 @@ static driver_list *_get_plugin(char *plugin_file)
 
                 prompt="ao_plugin_test() missing";
 		dt->functions->test = dlsym(dt->handle, "ao_plugin_test");
-		if (!(dt->functions->test)) goto failed;
+		if (!(dt->functions->test)) goto failed_quiet;
 
                 prompt="ao_plugin_driver_info() missing";
 		dt->functions->driver_info =
@@ -194,11 +194,11 @@ static driver_list *_get_plugin(char *plugin_file)
           return NULL;
 	}
 
-        adebug("Loaded driver %s\n",dt->functions->driver_info()->short_name);
 	return dt;
 
  failed:
         aerror("Failed to load plugin %s => %s\n",plugin_file,prompt);
+ failed_quiet:
 	free(dt->functions);
 	free(dt);
 	return NULL;
@@ -256,7 +256,6 @@ static driver_list* _load_static_drivers(driver_list **end)
 		driver->functions = static_drivers[0];
 		driver->handle = NULL;
 		driver->next = NULL;
-                adebug("Loaded driver %s (built-in)\n",driver->functions->driver_info()->short_name);
 
 		i = 1;
 		while (static_drivers[i] != NULL) {
@@ -269,7 +268,6 @@ static driver_list* _load_static_drivers(driver_list **end)
 			driver->next->next = NULL;
 
 			driver = driver->next;
-                        adebug("Loaded driver %s (built-in)\n",driver->functions->driver_info()->short_name);
 			i++;
 		}
 	}
@@ -296,7 +294,6 @@ static void _append_dynamic_drivers(driver_list *end)
 
 	/* now insert any plugins we find */
 	plugindir = opendir(AO_PLUGIN_PATH);
-        adebug("Loading driver plugins from %s...\n",AO_PLUGIN_PATH);
 	if (plugindir != NULL) {
           while ((plugin_dirent = readdir(plugindir)) != NULL) {
             char fullpath[strlen(AO_PLUGIN_PATH) + 1 + strlen(plugin_dirent->d_name) + 1];
@@ -667,7 +664,7 @@ static char *_sanitize_matrix(int maxchannels, char *matrix, ao_device *device){
         {
           int i;
           aerror("Unrecognized channel name \"%.*s\" in channel matrix \"%s\"\n",
-              t-p, p, matrix);
+              (int)(t-p), p, matrix);
         }
         free(ret);
         return NULL;
